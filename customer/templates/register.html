@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+{% block main %}
+<div class="container">
+    <div class="row mt-5 mb-5">
+        <div class="col-12 bg-warning text-center">
+            <div>
+                REGISTER
+            </div>
+          
+            <form method="POST">
+              {% csrf_token %}
+                <div class="control-group mb-2">
+                    {{form.first_name}}
+                    {% if error in form.name.errors %}
+                    <p class="text-danger help-block">{{error}}</p>
+                    {% endif %}
+                </div>
+                <div class="control-group mb-2">
+                    {{form.last_name}}
+                    {% if error in form.name.errors %}
+                    <p class="text-danger help-block">{{error}}</p>
+                    {% endif %}
+                </div>
+                <div class="control-group mb-2">
+                    {{form.email}}
+                    {% if error in form.name.errors %}
+                    <p class="text-danger help-block">{{error}}</p>
+                    {% endif %}
+                </div>
+               
+                <div class="control-group mb-2">
+                 
+                    {{form.username}}
+                    {% if error in form.name.errors %}
+               
+                    <p class="text-danger help-block">{{error}}</p>
+                   
+                    {% endif %}
+                </div>
+                <div class="control-group mb-2">
+                    {{form.password}}
+                    {% if error in form.name.errors %}
+                    <p class="text-danger help-block">{{error}}</p>
+                    {% endif %}
+                </div>
+                <div class="control-group mb-2">
+                    {{form.password_again}}
+                    {% if error in form.name.errors %}
+                    <p class="text-danger help-block">{{error}}</p>
+                    {% endif %}
+                </div>
+               <button class="btn btn-dark" type="submit" >Gonder</button>
+                
+            </form>
+           
+          
+
+        </div>
+    </div>
+</div>
+
+{% endblock main %}
