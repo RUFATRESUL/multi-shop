@@ -45,7 +45,7 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My Account</button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            {% if request.customer.is_authenticated %}
+                            {% if request.user.is_authenticated %}
                             <a href="{% url 'customer:logout' %}"class="nav-item nav-link">Logout</a> 
                             {% else %}
                             <a href="{% url 'customer:login' %}"class="nav-item nav-link">Sign in</a> 
@@ -86,7 +86,7 @@
         </div>
         <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
             <div class="col-lg-4">
-                <a href="" class="text-decoration-none">
+                <a href="{% url 'shop:index' %}" class="text-decoration-none">
                     <span class="h1 text-uppercase text-primary bg-dark px-2">Multi</span>
                     <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
                 </a>
@@ -140,13 +140,21 @@
                             <a href="{% url 'shop:index' %}" class="nav-item nav-link active">Home</a>
                             <a href="{% url 'shop:shop' %}" class="nav-item nav-link">Shop</a>
                             <a href="{% url 'customer:contact' %}" class="nav-item nav-link">Contact</a>
-                         
+                          
                           
                         </div>
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
-                            <a href="" class="btn px-0">
+                            {% if request.user.is_authenticated %}
+                            <span class="h5 text-white mr-2">{{request.user.username}}</span>
+                            
+                            
+                            {% endif %}
+
+                            <a href="{% url 'customer:wishlist' %}" class="btn px-0">
                                 <i class="fas fa-heart text-primary"></i>
-                                <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>
+                                {% if customer.wish_product.all %}
+                                <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">{{customer.wish_product.all.count}}</span>
+                                {% endif %}
                             </a>
                             <a href="" class="btn px-0 ml-3">
                                 <i class="fas fa-shopping-cart text-primary"></i>
@@ -264,4 +272,4 @@
     <script src="{% static 'js/main.js' %}"></script>
 </body>
 
-</html>
+</html>{% if customer.wish_product %}{{forloop.counter}}{% endif %}

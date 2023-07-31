@@ -1,0 +1,12 @@
+
+{% for _ in full_stars %}
+<small class="fa fa-star text-primary mr-1"></small>
+{% endfor %}
+
+{% if half_stars %}
+<small class="fa fa-star-half-alt text-primary mr-1"></small>
+{% endif %}
+
+{% for _ in empty_stars %}
+<small class="far fa-star text-primary mr-1"></small>
+{% endfor %}

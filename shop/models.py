@@ -52,7 +52,7 @@ class Prouduct(models.Model):
     company = models.ManyToManyField(Company,related_name='product')
     update = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
-    
+    general = models.ManyToManyField(GeneralCategory,related_name='prouduct')
     def __str__(self):
         return self.title
 
@@ -60,12 +60,10 @@ class ProuductImages (models.Model):
     prouduct = models.ForeignKey(Prouduct,on_delete=models.CASCADE,related_name='images')
     image = models.ImageField(upload_to='images')
 
-    # def __str__(self):
-    #     return self.image.url
     
-    # @display(description="Movcud sekil")
-    # def image_tag(self):
-    #     return format_html(f'<img width="200" src="{self.image.url}">')
+    @display(description="Movcud sekil")
+    def image_tag(self):
+        return format_html(f'<img width="200" src="{self.image.url}">')
 
     
    

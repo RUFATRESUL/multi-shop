@@ -1,95 +1,97 @@
 from django.contrib.auth.models import User
 from django import forms
-import re
-from .models import Contact,Customer
 
-username_compiler=re.compile(r'^\w{5,}$')
+from .models import Contact,Customer
+# from captcha.fields import ReCaptchaField
+# from captcha.widgets import ReCaptchaV2Checkbox
+
 
 
 class RegisterForm(forms.Form):
-    first_name = forms.CharField(widget=forms.TextInput( attrs={'class':'form-control','placeholder':'first name'}))
-    last_name=forms.CharField(widget=forms.TextInput( attrs={'class':'form-control','placeholder':'last name'}))
-    email=forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control','placeholder':'email'}))
-    username=forms.CharField(widget=forms.TextInput( attrs={'class':'form-control','placeholder':'username'}))
-    password=forms.CharField(widget=forms.PasswordInput( attrs={'class':'form-control','placeholder':'password'}))
-    password_again=forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'password_again'}))
+    first_name = forms.CharField(max_length=100, widget=forms.TextInput( attrs={'class':'form-control','placeholder':'first name'}))
+    last_name=forms.CharField(max_length=50, widget=forms.TextInput( attrs={'class':'form-control','placeholder':'last name'}))
+    email=forms.EmailField(max_length=50, widget=forms.EmailInput(attrs={'class':'form-control','placeholder':'email'}))
+    username=forms.CharField(max_length=100, widget=forms.TextInput( attrs={'class':'form-control','placeholder':'username'}))
+    password=forms.CharField(max_length=50, widget=forms.PasswordInput( attrs={'class':'form-control','placeholder':'password'}))
+    password_again=forms.CharField(max_length=50, widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'password_again'}))
+    # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
+        
+    def clean(self):
+
+        cleaned_data=super().clean()
+        password = cleaned_data.get('password')
+        password_again = cleaned_data.get('password_again')
+
+        if password and password_again and password!=password_again:
+            raise forms.ValidationError('daxil etdiyiniz sifre yanlisdir !')
+       
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email and User.objects.filter(email=email).exists():
+            raise forms.ValidationError('bu email adi artiq bir defe istifade olunub !')
+        return email
+    
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+      
+        if username and User.objects.filter(username=username).exists():
+            raise forms.ValidationError('Istifadeci adi yanlisdir !')
+        return username
 
 
     def save(self):
-        first_name = self.cleaned_data['first_name']
-        last_name = self.cleaned_data['last_name']
-        email = self.cleaned_data['email']
-        username = self.cleaned_data['username']
-        password = self.cleaned_data['password']
+        cleaned_data = self.cleaned_data
+        username = cleaned_data.get('username')
+        first_name = cleaned_data.get('first_name')
+        last_name = cleaned_data.get('last_name')
+        email = cleaned_data.get('email')
+        password = cleaned_data.get('password')
         
-        user = User.objects.create_user(
+        new_user = User.objects.create_user(
             first_name=first_name,
             last_name=last_name,
             username=username,
             email=email,
             password=password
         )
-        # user.first_name = first_name
-        # user.last_name = last_name
-        # user.save()
-
-        customer = Customer.objects.create(user=user)
+        customer = Customer.objects.create(user=new_user)
         return customer
     
-    # def clean_username(self):
-    #     username = self.cleaned_data['username']
-    #     if not username_compiler.match(username):
-    #         raise forms.ValidationError('Istifadeci adi yanlisdir')
-    #     elif User.objects.filter(username=username).exists():
-    #         raise forms.ValidationError('Istifadeci adi artiq bir defe istifade olunub')
-        
-    #     return username
+
     
-    # def clean_email(self):
-    #     email = self.cleaned_data['email']
-    #     if User.objects.filter(email=email).exists():
-    #         raise forms.ValidationError('bu email adi artiq bir defe istifade olunub')
-        
-    #     return email
-    
-    # def clean_password(self):
-        
-    #     password = self.cleaned_data['password']
-    #     password_again = self.cleaned_data.get('password_again')
-    #     if password and password_again and password!=password_again:
-    #         raise forms.ValidationError('daxil etdiyiniz sifre yanlisdir')
-        
-        # return password
+
+
 
 
     
 
-class LoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','placeholder':'username'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'username'}))
+# class LoginForm(forms.Form):
+#     username = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'username'}))
+#     password = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'username'}))
 
 
-    def save(self):
-        username = self.cleaned_data['username']
-        password = self.cleaned_data['password']
+#     def save(self):
+#         username = self.cleaned_data['username']
+#         password = self.cleaned_data['password']
 
-        user = User.objects.create_user(
-            username=username,
-            password=password
-        )
-        clear = Customer.objects.create(user=user)
-        return clear
-
+#         user = User.objects.create_user(
+#             username=username,
+#             password=password
+#         )
+#         clear = Customer.objects.create(user=user)
+#         return clear
 
 
 class ContactForm(forms.ModelForm):
     class Meta:
-        fields = '__all__'
         model = Contact
-        widgets = {
-            'name':forms.TextInput(attrs={'class':'form-control','placeholder':'Your Name'}),
-            'email':forms.TextInput(attrs={'class':'form-control','placeholder':'Your Email'}),
-            'subject':forms.TextInput(attrs={'class':'form-control','placeholder':'Your Name'}),
-            'message':forms.Textarea(attrs={'class':'form-control','placeholder':'message','rows':'8'}),
-        }
+        fields = '__all__'
+
+    # Add max_length attribute for the 'subject' field if needed
+
+    name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your Name'}))
+    email = forms.EmailField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your Email'}))
+    subject = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Subject'}))
+    message = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Message', 'rows': '8'}))
 

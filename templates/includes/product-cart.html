@@ -1,16 +1,23 @@
+{% load shop_helper %}
 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
     <div class="product-item bg-light mb-4">
         <div class="product-img position-relative overflow-hidden">
             <img class="img-fluid w-100" style={{"height:200px;object-fit:cover"}} src="{{product.images.first.image.url}}" alt="">
             <div class="product-action">
                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                {% if product|is_wished:request %}
+                
+                <a class="btn btn-outline-dark btn-square" href="{% url 'customer:wish_product' pk=product.pk %}"><i class="fas fa-heart"></i></a>
+                
+                {% else %}
+                <a class="btn btn-outline-dark btn-square" href="{% url 'customer:unwish_product' pk=product.pk %}"><i class="far fa-heart"></i></a>
+                {% endif %}
                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
             </div>
         </div>
         <div class="text-center py-4">
-            <a class="h6 text-decoration-none text-truncate" href="">{{product.title}}</a>
+            <a class="h6 text-decoration-none text-truncate" href="{% url 'shop:product-detail' pk=product.pk %}">{{product.title}}</a>
             <div class="d-flex align-items-center justify-content-center mt-2">
                 {% if product.old_price %}
                 <h5>${{product.price}}</h5><h6 class="text-muted ml-2"><del>${{product.old_price}}</del></h6>
