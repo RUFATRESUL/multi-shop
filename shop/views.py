@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from .models import Category,Company,Prouduct,ProuductImages
 from django.db.models import Count
 from customer.models import Review,Reply
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -11,6 +12,8 @@ def index(request):
     categories = Category.objects.annotate(prouduct_count=Count('prouduct'))
     new_product = Prouduct.objects.all().order_by('-created')[:8]
     featured_products = Prouduct.objects.filter(featured=True)
+    
+
     return render(request,'index.html',{
        'slide_company':slide_company,
        'nonslide_company':nonslide_company,
@@ -23,17 +26,29 @@ def index(request):
 
 def product_detail(request,pk):
     product=get_object_or_404(Prouduct,pk=pk)
+    total_review = Review.objects.filter(product=product).count()
     current_review = None
     if(request.user.is_authenticated and request.user.customer):
         current_review = Review.objects.filter(customer=request.user.customer,product=product).first()
 
     return render(request,'product-detail.html',{
         'product':product,
-        'current_review':current_review
+        'current_review':current_review,
+        'total_review':total_review
     })
 
 def shop(request):
-    return render(request,'shop.html')
+    products = Prouduct.objects.all()
+    number = 1  
+
+    paginator = Paginator(products, number)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+   
+    return render(request,'shop.html',{'page_obj': page_obj})
+
+
 
 def review(request,pk):
     if request.method == 'POST':
@@ -43,13 +58,17 @@ def review(request,pk):
             return HttpResponse(status=403)
         star_count = int(request.POST.get('star_count'))
         comment = request.POST.get('comment')
+       
         Review.objects.create(
             customer=customer,product=product,
             star_count=star_count,comment=comment,
 
         )
+        
         return redirect('shop:product-detail',pk=pk)
     return redirect('shop:product-detail',pk=pk)
+    
+
 
 def reply_review(request, pk):
     if request.method == 'POST':

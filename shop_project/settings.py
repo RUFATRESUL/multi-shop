@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'shop_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'multi_shop',
+        'NAME': 'ecommerce',
         'USER': 'postgres',
         'PASSWORD': '1997',
         'HOST': 'localhost',

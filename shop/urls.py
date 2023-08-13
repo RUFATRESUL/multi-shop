@@ -11,3 +11,4 @@ urlpatterns = [
     path('reply_review/<int:pk>/', views.reply_review, name='reply_review'),
      
 ]
+

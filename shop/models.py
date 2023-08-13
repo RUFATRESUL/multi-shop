@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.admin import display
 from django.utils.html import format_html
+from django.contrib.auth.models import User
+from django.urls import reverse
 # Create your models here.
 
 class Size(models.Model):
@@ -53,8 +55,22 @@ class Prouduct(models.Model):
     update = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     general = models.ManyToManyField(GeneralCategory,related_name='prouduct')
+
+
+    class Meta:
+        ordering = ['-created']
+
     def __str__(self):
         return self.title
+    
+    def get_avg_star(self):
+        return self.reviews.aggregate(star_count_avg=models.Avg('star_count'))['star_count_avg'] or 0
+    
+    def get_absolute_url(self):
+        return reverse("shop:product-detail", kwargs={"pk": self.pk})
+    
+    
+    
 
 class ProuductImages (models.Model):
     prouduct = models.ForeignKey(Prouduct,on_delete=models.CASCADE,related_name='images')

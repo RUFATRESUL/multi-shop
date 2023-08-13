@@ -1,30 +1,121 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import Customer,WishItem
+from .models import WishItem,BasketItem
 from .forms import RegisterForm,ContactForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,authenticate,logout
 from shop.models import Prouduct
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum,F
+from payment.models import Coupon
+
+
 # Create your views here.
+@login_required
+def basket(request):
+    basketlist = request.user.customer.basketlist.all().annotate(total_price=F('count')*F('product__price'))
+    all_price = basketlist.aggregate(all_price=Sum('total_price'))['all_price'] or 0
+    shipping_price = all_price * 0.07
+    final_price = all_price + shipping_price
 
-def cart(request):
-    return render(request,'cart.html')
+    coupun_code = request.GET.get('coupon')
+    coupun_message = None
+    coupun_status = None
+    coupun_discount = 0
+    coupun_discount_amount = 0
 
-def wishlist(request):
-    return render(request,'wishlist.html')
+    if coupun_code:
+        coupun = Coupon.objects.filter(code=coupun_code).first()
+        if coupun:
+            is_valid,message = coupun.is_valid(request.user.customer)
+            if is_valid:
+                coupun_status='valid'
+                coupun_message = message
+                coupun_discount = coupun.discount
+                coupun_discount_amount = final_price * coupun_discount / 100
+                final_price -= coupun_discount_amount
+            else:
+                coupun_status ='invalid'
+                coupun_message = message 
+        else:
+            coupun_status ='invalid'
+            coupun_message = 'Bele bir kupon yoxdur'
+
+    return render(request,'basket.html',
+    {'basketlist':basketlist,
+    'all_price':round(all_price,2),
+    'shipping_price':round(shipping_price,2),
+    'final_price':round(final_price,2),
+    'coupon_status':coupun_status,
+    'coupun_message':coupun_message,
+    'coupun_discount':coupun_discount,
+    'coupun_discount_amount':round(coupun_discount_amount,2),
+    'coupun_code':coupun_code
+    })
+
+
+
+
+def add_basket(request,product_pk):
+    if request.method=="POST":
+        size_pk = request.POST.get('size')
+        color_pk = request.POST.get('color')
+        count_pk = request.POST.get('count')
+        customer = request.user.customer
+        basket = BasketItem.objects.create(product_id=product_pk,
+                                           size_id=size_pk,
+                                           color_id=color_pk,
+                                           count=count_pk,
+                                           customer=customer)
+        return redirect(request.META.get('HTTP_REFERER'))
+    else:
+        return redirect('shop:index')
+    
+
+def increase_basket_item(request,basket_pk):
+    basket = get_object_or_404(BasketItem,pk=basket_pk)
+    basket.count = F('count')+1
+    basket.save()
+    return redirect('customer:basket')
+
+
+def decrease_basket_item(request,basket_pk):
+    basket = get_object_or_404(BasketItem,pk=basket_pk)
+    if basket.count == 1:
+        basket.delete()
+    else:
+        basket.count = F('count')-1
+        basket.save()
+    return redirect('customer:basket')
+
+@login_required
+def remove_basket(request,basket_pk):
+    basket = get_object_or_404(BasketItem,pk=basket_pk)
+    basket.delete()
+    return redirect('customer:basket')
+
+
+
+
+        
+
+
+def wishlist_view(request):
+    wishlist = request.user.customer.wishlist.all()
+    total_price = wishlist.aggregate(total_price=Sum('product__price'))['total_price']
+    return render(request,'wishlist.html',{'wishlist':wishlist,'total_price':total_price})
 
 @login_required
 def wish_product(request,pk):
     product = get_object_or_404(Prouduct,pk=pk)
     customer =request.user.customer
-    wishitem = WishItem.objects.filter(product=product,customer=customer).delete()
+    wishitem = WishItem.objects.create(product=product,customer=customer)
     return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
 def unwish_product(request,pk):
     product = get_object_or_404(Prouduct,pk=pk)
     customer =request.user.customer
-    wishitem = WishItem.objects.create(product=product,customer=customer)
+    wishitem = WishItem.objects.filter(product=product,customer=customer).delete()
     return redirect(request.META.get('HTTP_REFERER'))
 
 
@@ -59,21 +150,24 @@ def register(request):
 
 
 
+
+
 def login_view(request):
     if request.method == 'GET':
-        return render(request,'login.html')
+        return render(request, 'login.html')
     else:
-         username = request.POST.get('username')
-         password = request.POST.get('password')
-         remember_me = request.POST.get('remember_me')
-         user = authenticate(username=username,password=password)
-         if user:
-            login(request,user)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        remember_me = request.POST.get('remember_me')
+        user = authenticate(username=username, password=password)
+        if user:
+            login(request, user)
             nextUrl = request.GET.get('next')
             if not remember_me:
                 request.session.set_expiry(0)
             return redirect('shop:index')
-         return render(request,'login.html',context={'unsuccess':True,'nextUrl':nextUrl})
+        return render(request, 'login.html', context={'unsuccess': True, })
+
 
              
            
