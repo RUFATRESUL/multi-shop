@@ -9,28 +9,28 @@ def checkout(request):
     all_price = basketlist.aggregate(all_price=Sum('total_price'))['all_price'] or 0
     shipping_price = all_price * 0.07
     final_price = all_price + shipping_price
-    coupun_code = request.GET.get('coupon')
-    # coupun_message = None
-    coupun_status = None
-    coupun_discount = 0
-    coupun_discount_amount = 0
+    coupon_code = request.GET.get('coupon')
+    # coupon_message = None
+    coupon_status = None
+    coupon_discount = 0
+    coupon_discount_amount = 0
     coupon = None
 
-    if coupun_code:
-        coupun = Coupon.objects.filter(code=coupun_code).first()
-        if coupun:
-            is_valid,message = coupun.is_valid(request.user.customer)
+    if coupon_code:
+        coupon = Coupon.objects.filter(code=coupon_code).first()
+        if coupon:
+            is_valid,message = coupon.is_valid(request.user.customer)
             if is_valid:
-                coupun_status='valid'
-                coupun_discount = coupun.discount
-                coupun_discount_amount = final_price * coupun_discount / 100
-                # all_price -= coupun_discount_amount
-                final_price -= coupun_discount_amount
+                coupon_status='valid'
+                coupon_discount = coupon.discount
+                coupon_discount_amount = final_price * coupon_discount / 100
+                # all_price -= coupon_discount_amount
+                final_price -= coupon_discount_amount
             else:
-                coupun_status ='invalid'
+                coupon_status ='invalid'
                 
         else:
-            coupun_status ='invalid'
+            coupon_status ='invalid'
 
     form = OrderForm()
     if request.method == 'POST':
@@ -46,10 +46,10 @@ def checkout(request):
         'all_price':round(all_price,2),
         'shipping_price':round(shipping_price,2),
         'final_price':round(final_price,2),
-        'coupon_status':coupun_status,
-        'coupun_discount':coupun_discount,
-        'coupun_discount_amount':round(coupun_discount_amount,2),
-        'coupun_code':coupun_code
+        'coupon_status':coupon_status,
+        'coupon_discount':coupon_discount,
+        'coupon_discount_amount':round(coupon_discount_amount,2),
+        'coupon_code':coupon_code
 
     })
 

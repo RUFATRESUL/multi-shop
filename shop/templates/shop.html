@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% load static %}
-
+{% load shop_helper %}
 {% block main %}
     <!-- Breadcrumb Start -->
     <div class="container-fluid">
@@ -152,36 +152,47 @@
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Sorting</button>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#">Latest</a>
-                                        <a class="dropdown-item" href="#">Popularity</a>
-                                        <a class="dropdown-item" href="#">Best Rating</a>
+                                        <a class="dropdown-item" href="{% get_querystring request 'sorting' '' %}">Latest</a>
+                                        <a class="dropdown-item" href="{% get_querystring request 'sorting' 'title' %}">Alphabetically</a>
+                                        <a class="dropdown-item" href="{% get_querystring request 'sorting' '-price' %}">Price</a>
+                                        <a class="dropdown-item" href="{% get_querystring request 'sorting' '-avg_star' %}">Best Rating</a>
                                     </div>
                                 </div>
                                 <div class="btn-group ml-2">
                                     <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Showing</button>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#">10</a>
-                                        <a class="dropdown-item" href="#">20</a>
-                                        <a class="dropdown-item" href="#">30</a>
+                                        <a class="dropdown-item" href="{% get_querystring request 'page_by' 3 %}">3</a>
+                                        <a class="dropdown-item" href="{% get_querystring request 'page_by' 6 %}">6</a>
+                                        <a class="dropdown-item" href="{% get_querystring request 'page_by' 9 %}">9</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                  {% for product in page_obj %}
-                  {% include 'includes/product-cart.html' with product=product %}
-                  {% endfor %}
+                    {% for product in page %}
+                        {% include 'includes/product-cart.html' with product=product custom_data='col-lg-4 col-md-4 col-sm-6 pb-1' %} 
+                    {% endfor %}
             
                     <div class="col-12">
                         <nav>
                             <ul class="pagination justify-content-center">
-                                {% if page_obj.number == 1 %}
-                                <li class="page-item"><a class="page-link" href="?page=2">Product Pages &rarr;</a></li>
+                                {% if page.has_previous %}
+                                <li class="page-item "><a class="page-link" href="{% get_querystring request 'page' page.previous_page_number%}">Previous</a></li>
+                                {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="">Previous</a></li>
+                                {% endif %}
+                                {% for page_number in paginator.page_range %}
+                                <li class="page-item {% if page_number == page.number %}active{% endif %}"><a class="page-link" href="{% get_querystring request 'page' page_number %}">{{page_number}}</a></li>
+                                {% endfor %}
+                                {% if page.has_next %}
+                                <li class="page-item"><a class="page-link" href="{% get_querystring request 'page' page.next_page_number%}">Next</a></li>
+                                {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="">Next</a></li>
                                 {% endif %}
 
-                                {% if page_obj.has_previous %}
-                                <li class="page-item"><a class="page-link" href="?page=1"> &laquo;</a></li> 
-                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous &lsaquo;</a></li> 
+                                {% comment %} {% if page_obj.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page=1"> <i class="fa-solid fa-angles-left"></i></a></li> 
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous <i class="fa-solid fa-angle-left"></i></a></li> 
                                 {% endif %}
 
                                 {% for num in page_obj.paginator.page_range %}
@@ -191,9 +202,9 @@
                                 {% endfor %}
 
                                 {% if page_obj.has_next and page_obj.number != 1 %}
-                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &rsaquo;</a></li>
-                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"> &raquo;</a></li>
-                                {% endif %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next <i class="fa-solid fa-angle-right"></i></a></li>
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"> <i class="fa-solid fa-angles-right"></i></a></li>
+                                {% endif %} {% endcomment %}
                                     
                 
                                 

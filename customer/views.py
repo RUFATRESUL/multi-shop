@@ -17,39 +17,42 @@ def basket(request):
     shipping_price = all_price * 0.07
     final_price = all_price + shipping_price
 
-    coupun_code = request.GET.get('coupon')
-    coupun_message = None
-    coupun_status = None
-    coupun_discount = 0
-    coupun_discount_amount = 0
+    coupon_code = request.GET.get('coupon')
+    coupon_message = None
+    coupon_status = None
+    coupon_discount = 0
+    coupon_discount_amount = 0
 
-    if coupun_code:
-        coupun = Coupon.objects.filter(code=coupun_code).first()
-        if coupun:
-            is_valid,message = coupun.is_valid(request.user.customer)
+    if coupon_code:
+        coupon = Coupon.objects.filter(code=coupon_code).first()
+        if coupon:
+            is_valid, message = coupon.is_valid(request.user.customer)
             if is_valid:
-                coupun_status='valid'
-                coupun_message = message
-                coupun_discount = coupun.discount
-                coupun_discount_amount = final_price * coupun_discount / 100
-                final_price -= coupun_discount_amount
+                coupon_status='valid'
+                coupon_message = message
+                coupon_discount = coupon.discount
+                coupon_discount_amount = final_price * coupon_discount / 100
+                final_price -= coupon_discount_amount
             else:
-                coupun_status ='invalid'
-                coupun_message = message 
+                coupon_status ='invalid'
+                coupon_message = message 
         else:
-            coupun_status ='invalid'
-            coupun_message = 'Bele bir kupon yoxdur'
+            coupon_status ='invalid'
+            coupon_message = 'Bele bir kupon yoxdur'
+
+
+   
 
     return render(request,'basket.html',
     {'basketlist':basketlist,
     'all_price':round(all_price,2),
     'shipping_price':round(shipping_price,2),
     'final_price':round(final_price,2),
-    'coupon_status':coupun_status,
-    'coupun_message':coupun_message,
-    'coupun_discount':coupun_discount,
-    'coupun_discount_amount':round(coupun_discount_amount,2),
-    'coupun_code':coupun_code
+    'coupon_status':coupon_status,
+    'coupon_message':coupon_message,
+    'coupon_discount':coupon_discount,
+    'coupon_discount_amount':round(coupon_discount_amount,2),
+    'coupon_code':coupon_code
     })
 
 

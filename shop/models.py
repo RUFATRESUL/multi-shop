@@ -43,7 +43,7 @@ class Company(models.Model):
         return self.title
 
 class Prouduct(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.TextField(max_length=50)
     old_price = models.FloatField(null=True,blank=True)
     featured = models.BooleanField(default=False)
     price = models.FloatField()

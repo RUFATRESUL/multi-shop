@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from .models import Category,Company,Prouduct,ProuductImages
-from django.db.models import Count
+from django.db.models import Count,Avg
 from customer.models import Review,Reply
 from django.core.paginator import Paginator
 
@@ -24,6 +24,7 @@ def index(request):
        
     })
 
+
 def product_detail(request,pk):
     product=get_object_or_404(Prouduct,pk=pk)
     total_review = Review.objects.filter(product=product).count()
@@ -38,15 +39,32 @@ def product_detail(request,pk):
     })
 
 def shop(request):
-    products = Prouduct.objects.all()
-    number = 1  
+    products = Prouduct.objects.all().annotate(avg_star=Avg('reviews__star_count'), review_count=Count('reviews')) 
+     
+    search_input = request.GET.get('search')
+    if search_input:
+        products = products.filter(title__icontains=search_input)
 
-    paginator = Paginator(products, number)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    sorting_input = request.GET.get('sorting')
+    if sorting_input:
+        if sorting_input == '-avg_star':
+            products = products.order_by('avg_star','-review_count')
+        else:
+            products = products.order_by(sorting_input)
+
+
+    page_by_input = int(request.GET.get('page_by',4))
+    page_number = int(request.GET.get('page',1))
+    paginator = Paginator(products,page_by_input)
+    page = paginator.page(page_number)
+    products = page.object_list
 
    
-    return render(request,'shop.html',{'page_obj': page_obj})
+    return render(request,'shop.html',{
+        'products':products,
+        'paginator':paginator,
+        'page': page,
+        })
 
 
 

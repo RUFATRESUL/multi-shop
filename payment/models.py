@@ -43,8 +43,8 @@ PHONE =[
 
 class Orded(models.Model):
     customer = models.ForeignKey('customer.Customer',on_delete=models.SET_NULL,null=True)
-    coupun_code = models.CharField(max_length=20,null=True,blank=True)
-    coupun_discount = models.IntegerField(default=20)
+    coupon_code = models.CharField(max_length=20,null=True,blank=True)
+    coupon_discount = models.IntegerField(default=0)
     accepted = models.BooleanField(default=False)
     delivered = models.BooleanField(default=False)
     first_name = models.CharField(max_length=50)

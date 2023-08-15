@@ -3,7 +3,7 @@ from .models import Orded,OrderProduct
 
 class OrderForm(forms.ModelForm):
     class Meta:
-        exclude = ['customer','coupun_code','coupun_discount','accepted','delivered','created']
+        exclude = ['customer','coupon_code','coupon_discount','accepted','delivered','created']
         model = Orded
         widgets = {
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'John'}),
@@ -21,9 +21,10 @@ class OrderForm(forms.ModelForm):
     def save(self,customer,basketlist,coupon):
         data = self.cleaned_data.copy()
         data['customer'] = customer
-        if coupon and coupon.is_valid()[0]:
-            data['coupun_code'] = coupon.code
-            data['coupun_discount'] = coupon.discount
+        print(coupon.code)
+        if coupon and coupon.is_valid(customer)[0]:
+            data['coupon_code'] = coupon.code
+            data['coupon_discount'] = coupon.discount
         order = Orded.objects.create(**data)
 
 

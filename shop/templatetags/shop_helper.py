@@ -32,3 +32,12 @@ def is_wished(product,request):
         return False
     
     return WishItem.objects.filter(product=product,customer=request.user.customer).exists()
+
+
+@register.simple_tag
+def get_querystring(request,key,value):
+    querydict = request.GET.copy()
+    querydict[key] = value
+    querystring = querydict.urlencode()
+    return '?'+ querystring
+    
