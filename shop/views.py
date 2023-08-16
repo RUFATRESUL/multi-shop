@@ -1,8 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
-from .models import Category,Company,Prouduct,ProuductImages
+from .models import Category,Company,Prouduct,Color,Size
 from django.db.models import Count,Avg
 from customer.models import Review,Reply
 from django.core.paginator import Paginator
+from .filters import ProductFilter
 
 # Create your views here.
 
@@ -45,6 +46,11 @@ def shop(request):
     if search_input:
         products = products.filter(title__icontains=search_input)
 
+    product_filter = ProductFilter(request.GET,products)
+    products = product_filter.qs
+    colors = Color.objects.all().annotate(product_count=Count('product'))
+    sizes = Size.objects.all().annotate(product_count=Count('prouduct'))
+
     sorting_input = request.GET.get('sorting')
     if sorting_input:
         if sorting_input == '-avg_star':
@@ -64,6 +70,8 @@ def shop(request):
         'products':products,
         'paginator':paginator,
         'page': page,
+        'colors':colors,
+        'sizes':sizes,
         })
 
 
