@@ -1,0 +1,164 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-18 00:25+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\payment\models.py:20
+msgid "this coupon has passed a history "
+msgstr "Bu kupon tarihi kecib"
+
+#: .\payment\models.py:22
+msgid "You've heard that you've  exceeded the limit on use in this coupon"
+msgstr "Bu kuponun kullanim sinirini kecmissiniz"
+
+#: .\payment\models.py:24
+msgid "You have already used this coupon"
+msgstr "bu kuponun zaten kullandiniz"
+
+#: .\payment\models.py:26
+msgid "The coupon was added to the field"
+msgstr "Bu kupon basariyla ilave edildi"
+
+#: .\shop\templates\index.html:24 .\shop\templates\index.html:39
+#: .\shop\templates\index.html:130
+msgid "Shop Now"
+msgstr "Alis-veris yapin"
+
+#: .\shop\templates\index.html:55
+msgid "Quality Product"
+msgstr "Kaliteli ürün"
+
+#: .\shop\templates\index.html:61
+msgid "Free Shipping"
+msgstr "ucretsiz çatdirilma"
+
+#: .\shop\templates\index.html:67
+msgid "14-Day Return"
+msgstr "14 gune geri vermek"
+
+#: .\shop\templates\index.html:73
+msgid "24/7 Support"
+msgstr "7/24 Destek"
+
+#: .\shop\templates\index.html:83 .\templates\layout.html:119
+msgid "Categories"
+msgstr "Kateqoriler"
+
+#: .\shop\templates\index.html:107
+msgid "Featured Products"
+msgstr "Numayiş olunan urunler"
+
+#: .\shop\templates\index.html:128
+msgid "Save"
+msgstr "Guvenli"
+
+#: .\shop\templates\index.html:144
+msgid "Recent Products"
+msgstr "Son urunler"
+
+#: .\templates\layout.html:38
+msgid "About"
+msgstr "Hakkimizda"
+
+#: .\templates\layout.html:39 .\templates\layout.html:141
+msgid "Contact"
+msgstr "Kontakt"
+
+#: .\templates\layout.html:40
+msgid "Help"
+msgstr "Yardim"
+
+#: .\templates\layout.html:41
+msgid "FAQs"
+msgstr "FAQ"
+
+#: .\templates\layout.html:47 .\templates\layout.html:209
+msgid "My Account"
+msgstr "Benim hesabim"
+
+#: .\templates\layout.html:50
+msgid "Logout"
+msgstr "Cikis yap"
+
+#: .\templates\layout.html:52
+msgid "Sign in"
+msgstr "Kayit ol"
+
+#: .\templates\layout.html:53
+msgid "Sign up"
+msgstr "Uye ol"
+
+#: .\templates\layout.html:106
+msgid "Customer Service"
+msgstr "Musteri hizmetleri"
+
+#: .\templates\layout.html:139 .\templates\layout.html:200
+#: .\templates\layout.html:211
+msgid "Home"
+msgstr "Ana Sayfa"
+
+#: .\templates\layout.html:140
+#, fuzzy
+#| msgid "Shop Now"
+msgid "Shop"
+msgstr "Alis-veris yapin"
+
+#: .\templates\layout.html:142 .\templates\layout.html:204
+#: .\templates\layout.html:215
+msgid "Checkout"
+msgstr "Yokla"
+
+#: .\templates\layout.html:189
+msgid "Get In Touch"
+msgstr "Temasa Gecmek"
+
+#: .\templates\layout.html:198
+msgid "Quick Shop"
+msgstr "Hizli alisveris"
+
+#: .\templates\layout.html:201 .\templates\layout.html:212
+msgid "Our Shop"
+msgstr "Dukkanimiz"
+
+#: .\templates\layout.html:202 .\templates\layout.html:213
+msgid "Shop Detail"
+msgstr " magaza detayi"
+
+#: .\templates\layout.html:203 .\templates\layout.html:214
+msgid "Shopping Cart"
+msgstr "alisveris detayi"
+
+#: .\templates\layout.html:205
+msgid "Contact Us"
+msgstr "bize ulasin"
+
+#: .\templates\layout.html:220
+msgid "Newsletter"
+msgstr "Haberler"
+
+#: .\templates\layout.html:226
+msgid "Sign Up"
+msgstr "Uye ol"
+
+#: .\templates\layout.html:230
+msgid "Follow Us"
+msgstr "Bizi izleyin"
+
+#: .\templates\layout.html:246
+msgid "HTML Codex"
+msgstr "HTML codlari"

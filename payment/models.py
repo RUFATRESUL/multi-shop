@@ -17,13 +17,13 @@ class Coupon(models.Model):
     
     def is_valid(self,customer):
         if timezone.localtime() > self.expire:
-            return (False,'Bu kuponun tarixi kecmisdir')
+            return [False,_('this coupon has passed a history ')]
         elif self.used_customers.count() >= self.limit:
-            return([False,'Siz artiq bu kuponda istifade limit bitirmisiniz'])
+            return[False,_('''You've heard that you've  exceeded the limit on use in this coupon''')]
         elif self.used_customers.contains(customer):
-            return([False,'Siz artiq bu kupondan istifade etmisiniz'])
+            return[False,_('You have already used this coupon')]
         else:
-            return[True,'Kupon ugurla elave olundu']
+            return[True,_('The coupon was added to the field')]
 
 
 COUNTRIES = [
