@@ -55,19 +55,36 @@
                         </div>
                     </div>
                     <div class="btn-group mx-2">
-                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">USD</button>
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
+                            {% firstof request.session.currency 'USD'  %}
+                        </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button">EUR</button>
-                            <button class="dropdown-item" type="button">GBP</button>
-                            <button class="dropdown-item" type="button">CAD</button>
+                            <a class="dropdown-item" href="{% url 'customer:change-currency' %}?currency=EUR">EUR</a>
+                            <a class="dropdown-item" href="{% url 'customer:change-currency' %}?currency=AZN">AZN</a>
+                            <a class="dropdown-item" href="{% url 'customer:change-currency' %}?currency=TRY">TRY</a>
+                            <a class="dropdown-item" href="{% url 'customer:change-currency' %}?currency=USD">USD</a>
                         </div>
                     </div>
+                    <form id="lang-form" class="d-none" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                        <input name="next" type="hidden" value="{{ redirect_to }}">
+                        <select id="lang-select" name="language">
+                            {% get_current_language as LANGUAGE_CODE %}
+                            {% get_available_languages as LANGUAGES %}
+                            {% get_language_info_list for LANGUAGES as languages %}
+                            {% for language in languages %}
+                                <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                    {{ language.name_local }} ({{ language.code }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" value="Go">
+                    </form>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">EN</button>
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{{LANGUAGE_CODE|upper}}</button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button">FR</button>
-                            <button class="dropdown-item" type="button">AR</button>
-                            <button class="dropdown-item" type="button">RU</button>
+                            {% for language in languages %}
+                            <button class="dropdown-item" type="button" onclick="document.getElementById('lang-select').value='{{language.code}}';document.getElementById('lang-form').submit()">{{language.code|upper}}</button>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>

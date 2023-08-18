@@ -56,8 +56,6 @@ def basket(request):
     })
 
 
-
-
 def add_basket(request,product_pk):
     if request.method=="POST":
         size_pk = request.POST.get('size')
@@ -97,11 +95,6 @@ def remove_basket(request,basket_pk):
     return redirect('customer:basket')
 
 
-
-
-        
-
-
 def wishlist_view(request):
     wishlist = request.user.customer.wishlist.all()
     total_price = wishlist.aggregate(total_price=Sum('product__price'))['total_price']
@@ -133,12 +126,6 @@ def contact(request):
     return render(request,'contact.html',{'form':form})
 
 
-
-
-
-
-
-
 def register(request):
     form = RegisterForm()
     if request.method == 'POST':
@@ -148,11 +135,6 @@ def register(request):
             login(request,customer.user)
             return redirect('customer:login')
     return render(request, 'register.html', {'form': form})
-
-
-
-
-
 
 
 def login_view(request):
@@ -171,14 +153,18 @@ def login_view(request):
             return redirect('shop:index')
         return render(request, 'login.html', context={'unsuccess': True, })
 
-
-             
-           
-
-
     
 def logout_view(request):
     logout(request)
     return redirect('customer:login')
 
+
+usd_eq = {'AZN':1.7,'TRY':27.1,'EUR':0.92,'USD':1}
+
+def change_currency(request):
+    currency = request.GET.get('currency')
+    currency_ratio = usd_eq[currency]
+    request.session['currency'] = currency
+    request.session['currency_ratio'] = currency_ratio
     
+    return redirect(request.META.get('HTTP_REFERER'))
