@@ -32,6 +32,7 @@
                             <th>Remove</th>
                         </tr>
                     </thead>
+            {% comment %} -------------------------CUSTOMER BASKETLIST---------------------------------------------- {% endcomment %}
                     <tbody class="align-middle">
                         {% for basket in basketlist %}
                         <tr>
@@ -57,8 +58,10 @@
                         </tr>
                         {% endfor %}
                     </tbody>
+                    {% comment %} --------------------------------------------------------------------------- {% endcomment %}
                 </table>
             </div>
+            {% comment %} --------------CUSTOMER COUPON CODE SECTION---------------------------------------- {% endcomment %}
             <div class="col-lg-4">
                 <form class="mb-30" method="GET">
                     <div class="input-group">
@@ -104,6 +107,7 @@
 
                 </div>
             </div>
+            {% comment %} ------------------------------------ {% endcomment %}
         </div>
     </div>
     {% endblock main %}

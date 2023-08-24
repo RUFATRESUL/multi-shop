@@ -3,6 +3,7 @@ from django.contrib.admin import display
 from django.utils.html import format_html
 from django.contrib.auth.models import User
 from django.urls import reverse
+from shared.urlutilis import get_slug
 # Create your models here.
 
 class Size(models.Model):
@@ -28,7 +29,7 @@ class Category(models.Model):
     title = models.CharField(max_length=20)
     image = models.ImageField(upload_to='categories')
     general_category = models.ForeignKey(GeneralCategory,on_delete=models.SET_NULL,null=True,blank=True,related_name='sub_categories')
-
+    
     def __str__(self):
         return self.title
 
@@ -41,9 +42,11 @@ class Company(models.Model):
 
     def __str__(self):
         return self.title
+    
 
 class Prouduct(models.Model):
     title = models.TextField(max_length=50)
+    slug = models.CharField(max_length=100,blank=True)
     old_price = models.FloatField(null=True,blank=True)
     featured = models.BooleanField(default=False)
     price = models.FloatField()
@@ -56,6 +59,18 @@ class Prouduct(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     general = models.ManyToManyField(GeneralCategory,related_name='prouduct')
 
+    def save(self, *args, **kwargs):
+        self.slug = get_slug(self.title)
+        return super().save(*args, **kwargs)
+
+
+    def get_similar_products(self):
+        # similar_by_category = Prouduct.objects.filter(category__in=self.category.all()).exclude(pk=self.pk)
+
+        similar_by_general = Prouduct.objects.filter(general__in=self.general.all()).exclude(pk=self.pk)
+
+        return similar_by_general
+
 
     class Meta:
         ordering = ['-created']
@@ -67,7 +82,7 @@ class Prouduct(models.Model):
         return self.reviews.aggregate(star_count_avg=models.Avg('star_count'))['star_count_avg'] or 0
     
     def get_absolute_url(self):
-        return reverse("shop:product-detail", kwargs={"pk": self.pk})
+        return reverse("shop:product-detail", kwargs={"pk": self.pk, 'slug': self.slug})
     
     
     

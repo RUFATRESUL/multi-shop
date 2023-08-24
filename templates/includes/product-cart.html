@@ -6,7 +6,7 @@
         <div class="product-img position-relative overflow-hidden">
             <img class="img-fluid w-100" style={{"height:200px;object-fit:cover"}} src="{{product.images.first.image.url}}" alt="">
             <div class="product-action">
-                <a class="btn btn-outline-dark btn-square" href="{% url 'shop:product-detail' pk=product.pk %}"><i class="fa fa-shopping-cart"></i></a>
+                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
                 {% if product|is_wished:request %}
                 
                 <a class="btn btn-outline-dark btn-square" href="{% url 'customer:unwish_product' pk=product.pk %}"><i class="fas fa-heart"></i></a>
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="text-center py-4">
-            <a class="h6 text-decoration-none text-truncate" href="{% url 'shop:product-detail' pk=product.pk %}">{{product.title}}</a>
+            <a class="h6 text-decoration-none text-truncate" href="{{product.get_absolute_url}}">{{product.title}}</a>
             <div class="d-flex align-items-center justify-content-center mt-2">
                 {% if product.old_price %}
                 <h5>{%get_price_text request product.price%}</h5><h6 class="text-muted ml-2"><del>{%get_price_text request product.old_price%}</del></h6>

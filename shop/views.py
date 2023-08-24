@@ -4,6 +4,7 @@ from django.db.models import Count,Avg
 from customer.models import Review,Reply
 from django.core.paginator import Paginator
 from .filters import ProductFilter
+from django.urls import reverse
 
 # Create your views here.
 
@@ -26,17 +27,21 @@ def index(request):
     })
 
 
-def product_detail(request,pk):
+def product_detail(request,pk,slug):
     product=get_object_or_404(Prouduct,pk=pk)
     total_review = Review.objects.filter(product=product).count()
+   
     current_review = None
     if(request.user.is_authenticated and request.user.customer):
         current_review = Review.objects.filter(customer=request.user.customer,product=product).first()
-
+    
+    similar_products = product.get_similar_products()
     return render(request,'product-detail.html',{
         'product':product,
         'current_review':current_review,
-        'total_review':total_review
+        'total_review':total_review,
+        'similar_products':similar_products
+        
     })
 
 def shop(request):
@@ -91,8 +96,8 @@ def review(request,pk):
 
         )
         
-        return redirect('shop:product-detail',pk=pk)
-    return redirect('shop:product-detail',pk=pk)
+        return redirect('shop:product-detail', pk=product.pk, slug=product.slug)
+    return redirect('shop:product-detail', pk=product.pk, slug=product.slug)
     
 
 
@@ -108,7 +113,9 @@ def reply_review(request, pk):
                 comment=reply_comment
             )
 
-        return redirect('shop:product-detail', pk=review.product.pk)
+        return redirect(reverse('shop:product-detail', kwargs={'pk': pk, 'slug': review.product.slug}))
 
     return HttpResponse(status=400)  
+
+
 

@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from shop.models import Prouduct
 from django.core.validators import MinValueValidator,MaxValueValidator
+from uuid import uuid4
+from django.utils.timezone import localtime,timedelta 
+from django.urls import reverse
 
 # Create your models here.
 
@@ -49,6 +52,22 @@ class Reply(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     comment = models.TextField()
     created = models.DateField(auto_now_add=True)
+
+
+class ResetPassword(models.Model):
+    user = models.ForeignKey('auth.User',on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid4)
+    used = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        not_used = not self.used
+        not_expired = (localtime()-timedelta(days=1)) < self.created
+        return not_used and not_expired
+    
+    def get_absolute_url(self):
+        return reverse("customer:reset-password", kwargs={"token": self.token})
+    
 
 
     

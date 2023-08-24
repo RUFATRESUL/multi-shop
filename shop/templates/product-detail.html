@@ -20,6 +20,7 @@
     <!-- Shop Detail Start -->
     <div class="container-fluid pb-5">
         <div class="row px-xl-5">
+            {% comment %} -----------PROUDUCTS SLIDER -----------------------{% endcomment %}
             <div class="col-lg-5 mb-30">
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner bg-light">
@@ -39,7 +40,9 @@
                     </a>
                 </div>
             </div>
+            {% comment %} ----------------------------------------------------- {% endcomment %}
 
+            {% comment %} -------------------PRODUCTS CONTENT-----------{% endcomment %}
             <div class="col-lg-7 h-auto mb-30">
                 <div class="h-100 bg-light p-30">
                     <h3>{{product.title}}</h3>
@@ -58,6 +61,7 @@
 
                     </div>
                     <p class="mb-4">{{product.description}}</p>
+
                     <form method="POST" action="{% url 'customer:add-basket' product_pk=product.pk %}"> 
                         {% csrf_token %}
                     <div class="d-flex mb-3">
@@ -95,10 +99,17 @@
                         </div>
                         <button type="submit" class="btn btn-primary px-3 mr-3"><i class="fa fa-shopping-cart mr-1"></i> Add To
                             Cart</button>
-                        <button type="submit" class="btn btn-primary px-3"><i class="fas fa-heart"></i> Add To
-                        Wishlist</button>
+                            {% if product|is_wished:request %}
+                
+                             <a class="btn btn-primary px-3" href="{% url 'customer:unwish_product' pk=product.pk %}"><i class="fas fa-heart "></i>Add to Wishlist</a>
+                
+                            {% else %}
+                             <a class="btn btn-primary px-3" href="{% url 'customer:wish_product' pk=product.pk %}"><i class="far fa-heart "></i>Add to Wishlist</a>
+                            {% endif %}
+                        
                     </div>
                 </form>
+               
 
                     <div class="d-flex pt-2">
                         <strong class="text-dark mr-2">Share on:</strong>
@@ -119,7 +130,9 @@
                     </div>
                 </div>
             </div>
+            {% comment %} ------------------------------------------------------- {% endcomment %}
         </div>
+        {% comment %}---------------------PRODUCT REVIEW (mehsul şərhi) -------------------------- {% endcomment %}
         <div class="row px-xl-5">
             <div class="col">
                 <div class="bg-light p-30">
@@ -137,6 +150,7 @@
                      
                         <div class="tab-pane fade" id="tab-pane-3">
                             <div class="row">
+                    {% comment %} ----------Comments on this product (Bu mehsuldaki serhler) ------- {% endcomment %}
                                 <div class="col-md-6">
                                     {% for review in product.reviews.all %}
                                     {% if not current_review or review.pk != current_review.pk %} 
@@ -152,45 +166,56 @@
                                     </div>
   
                                    {% endif %}
-   
                                    {% endfor %}
-                                    {% if current_review %}
-                                    <h4 class="mb-4">1 review for "Product Name"</h4>
-                                    <div class="media mb-4">
-                                        <img src="{% static 'img/users.jpg' %}" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
-                                        <div class="media-body">
-                                            <h6>{{request.user.get_full_name}}<small> - <i>{{current_review.created}}</i></small></h6>
-                                            <div class="text-primary mb-2">
-                                                {% stars current_review.star_count %}
-                                            </div>
-                                            <p>{{current_review.comment}}</p>
-                                            {% for comment in current_review.reply_comments.all %}
-                                            <div class="media mt-4">
-                                                <img src="{% static 'img/users.jpg' %}" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
-                                                <div class="media-body">
-                                                    <h6>{{ comment.user.get_full_name }}<small> - <i>{{ comment.created }}</i></small></h6>
-                                                    <p>{{ comment.comment }}</p>
-                                                    
-                                                </div>
-                                            </div>
-                                            {% endfor %}
-                                            <form method="POST" action="{% url 'shop:reply_review' pk=current_review.pk %}">
-                                                {% csrf_token %}
-                                                <div class="form-group">
-                                                    <label for="reply_comment">Reply to Comment:</label>
-                                                    <textarea id="reply_comment" name="reply_comment" cols="30" rows="5" class="form-control"></textarea>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="submit" value="Submit Reply" class="btn btn-primary">
-                                                </div>
-                                            </form>
+                    {% comment %} ------------------------------------------- {% endcomment %}
+                    {% comment %} -------------------REPLY COMMENT (CAVAB şərhi) ------------------------------------ {% endcomment %}
+                                {% if current_review %}
+                                <h4 class="mb-4">1 review for "Product Name"</h4>
+                                <div class="media mb-4">
+                                    <img src="{% static 'img/users.jpg' %}" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
+                                    <div class="media-body">
+                                        <h6>{{ request.user.get_full_name }}<small> - <i>{{ current_review.created }}</i></small></h6>
+                                        <div class="text-primary mb-2">
+                                            {% stars current_review.star_count %}
+                                        </div>
+                                        <p>{{ current_review.comment }}</p>
+                                       
+                                    </div>
+                                 </div>
+                
+                                 {% for comment in current_review.reply_comments.all %}
+                                 <div class="media mt-4">
+                                     <img src="{% static 'img/users.jpg' %}" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
+                                     <div class="media-body">
+                                         <h6>{{ comment.user.get_full_name }}<small> - <i>{{ comment.created }}</i></small></h6>
+                                         <p>{{ comment.comment }}</p>
+                                        </div>
+                                     
+                                    </div>
+                                    {% endfor %}
+                                    
+                                    {% endif %}
+                                    {% comment %}------ ----PRODUCT REPLY REVIEW FORM (MEHSULUN CAVAB SERH FORMU) ---------------{% endcomment %}
+                                    
+                                    
+                                    <form method="POST" action="{{product.get_absolute_url}}">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            
+                                            <label for="reply_comment">Reply to Comment:</label>
+                                            <textarea id="reply_comment" name="reply_comment" cols="30" rows="5" class="form-control"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="submit" value="Submit Reply" class="btn btn-primary">
+                                        </div>
+                                    </form>
+                                       
                                         </div>
                                     </div>
-                                    {% endif %}
                                  
                                 </div>
+                                {% comment %} ---------------------------PRODUCT REVIEW FORM(MEHSULUN SERH FORMU)------------------------------------ {% endcomment %}
                                 <div class="col-md-6">
-                                    
                                     {% if request.user.is_authenticated and not current_review %}
                                     <h4 class="mb-4">Leave a review</h4>
                                     <small>Your email address will not be published. Required fields are marked *</small>
@@ -232,6 +257,7 @@
                 </div>
             </div>
         </div>
+        {% comment %} -------------------------------------------------------------- {% endcomment %}
     </div>
     <!-- Shop Detail End -->
 
@@ -241,12 +267,13 @@
         <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">You May Also Like</span></h2>
         <div class="row px-xl-5">
             <div class="col">
+                {% comment %} --------SIMILIAR PRODUCTS(OXSAR MEHSULLAR)----------------- {% endcomment %}
                 <div class="owl-carousel related-carousel">
-                    
+                   {% for similiar in similar_products %}
                     <div class="product-item bg-light">
                         <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100"  src="{% static 'img/product-1.jpg' %}" alt="">
-                            <div class="product-action">
+                            <img class="img-fluid w-100" style={{"height:200px;object-fit:cover"}} src="{{similiar.images.first.image.url}}" alt="">
+                            <div class="product-action">-+
                                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
@@ -254,122 +281,20 @@
                             </div>
                         </div>
                         <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="">Perfect Product</a>
+                            <a class="h6 text-decoration-none text-truncate" href="{{product.get_absolute_url}}">{{similiar.title}}</a>
                             <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                                <h5>{{similiar.price}}</h5><h6 class="text-muted ml-2"><del>{{similiar.old_price}}</del></h6>
                             </div>
                             <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small>(99)</small>
+                                {% stars similiar.get_avg_star %}
+                                <small>({{total_review}})</small>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="product-item bg-light">
-                        <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="{% static 'img/product-2.jpg' %}" alt="">
-                            <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                            <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small>(99)</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-item bg-light">
-                        <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="{% static 'img/product-3.jpg' %}" alt="">
-                            <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                            <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small>(99)</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-item bg-light">
-                        <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="{% static 'img/product-4.jpg' %}" alt="">
-                            <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                            <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small>(99)</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-item bg-light">
-                        <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="{% static 'img/product-5.jpg' %}" alt="">
-                            <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                            <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small>(99)</small>
-                            </div>
-                        </div>
-                    </div> 
+                    </div>  
+                    {% endfor %}
+                  
                 </div>
+                {% comment %} ----------------------------------------- {% endcomment %}
             </div>
         </div>
     </div>

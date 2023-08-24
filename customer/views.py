@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import WishItem,BasketItem
+from .models import WishItem,BasketItem,ResetPassword
 from .forms import RegisterForm,ContactForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,authenticate,logout
@@ -7,6 +7,9 @@ from shop.models import Prouduct
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum,F
 from payment.models import Coupon
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 
 # Create your views here.
@@ -168,3 +171,28 @@ def change_currency(request):
     request.session['currency_ratio'] = currency_ratio
     
     return redirect(request.META.get('HTTP_REFERER'))
+
+def forgot_password_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        user = User.objects.filter(email=email).first()
+        if user:
+            ResetPassword.objects.filter(user=user).update(used=True)
+            rp = ResetPassword.objects.create(user=user)
+            url = request.build_absolute_uri(rp.get_absolute_url())
+            message = f'Please renew your password from this link: {url}'
+            subject = 'Renew your password'
+            sender = settings.EMAIL_HOST_USER
+            send_mail(subject, message, sender, [email])
+            return redirect('customer:reset-password-result', color='success', message='Mail sent successfully')
+        else:
+            return render(request, 'forgot-password.html', {'status': 'invalid_user'})
+    return render(request, 'forgot-password.html')
+
+
+
+def reset_password_view(request,token):
+    return render(request,'reset-password.html')
+
+def reset_password_result_view(request,color,message):
+    return render(request,'reset-password-result.html',{'color':color,'message':message})

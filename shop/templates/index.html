@@ -2,6 +2,17 @@
 {% extends 'layout.html' %}
 {% load static %}
 {% load i18n %}
+
+{% block meta_tags %}
+  <meta name="keywords" content="clothes,shop,coupon,sale,wear">
+  <meta name="robots" content="index, follow">
+  <meta name="description" content="As the temperature rises, it's time to refresh your summer wardrobe with the latest accessories that will elevate your style and keep you .">
+  <meta property="og:title" content="Ana Səhifə - Compar Academy İxtisaslaşmış Tədris Mərkəzi">
+  <meta property="og:description" content="Məqsədimiz tədrisini etdiyimiz sahələrə marağı olan insanlara motivasiya vermək, düzgün istiqamətləndirmək və gələcəklərinə müsbət təsir göstərməkdir.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://compar.edu.az/az/">
+  <meta property="og:image" content="/staticfiles/defaults/img/compar%20logo1%402x.png">
+{% endblock meta_tags %}
 {% block main %}
     <!-- Carousel Start -->
     <div class="container-fluid mb-3">

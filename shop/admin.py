@@ -17,6 +17,7 @@ class ReviewInline(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline,ReviewInline]
     list_filter = ['general']
+    readonly_fields = ['slug']
 
 # Register your models here.
 admin.site.register(Size)

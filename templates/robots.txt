@@ -1,0 +1,5 @@
+User-agent: *
+
+Disallow: {% url 'customer:wishlist' %}
+Disallow: {% url 'customer:basket' %}
+Disallow: {% url 'payment:checkout' %}

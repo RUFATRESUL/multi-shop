@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'crispy_forms',
     "django_bootstrap5",
     'shop',
@@ -162,3 +163,9 @@ LOGIN_URL = reverse_lazy('customer:register')
 # RECAPTCHA_PUBLIC_KEY = '6Lc3PVknAAAAAC_TuBqAFVBlItA14Lxc0q_SYus4'
 # RECAPTCHA_PRIVATE_KEY = '6Lc3PVknAAAAAMVABXXxSVNaWcpIQ7xV-pjPvHDE'
 # SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
+# eyxqpnhvrlopxsiq
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'derbylogotech1@gmail.com'
+EMAIL_HOST_PASSWORD = 'eyxqpnhvrlopxsiq'
+EMAIL_USE_TLS = True
