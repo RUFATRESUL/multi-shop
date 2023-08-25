@@ -5,9 +5,10 @@ from customer.models import Review,Reply
 from django.core.paginator import Paginator
 from .filters import ProductFilter
 from django.urls import reverse
+from django.views.decorators.cache import cache_page
 
 # Create your views here.
-
+@cache_page(15)
 def index(request):
     slide_company = Company.objects.filter(is_slide=True)[:3]
     nonslide_company = Company.objects.filter(is_slide=False)[:4]

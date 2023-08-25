@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django import forms
 
-from .models import Contact,Customer
+from .models import Contact,Customer,ResetPassword
 # from captcha.fields import ReCaptchaField
 # from captcha.widgets import ReCaptchaV2Checkbox
 
@@ -94,4 +94,42 @@ class ContactForm(forms.ModelForm):
     email = forms.EmailField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your Email'}))
     subject = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Subject'}))
     message = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Message', 'rows': '8'}))
+
+
+class PasswordResetForm(forms.Form):
+    token = forms.CharField(widget=forms.HiddenInput())
+    username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Username'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Password'}))
+    password_again = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Password_again'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        token = cleaned_data['token']
+        username = cleaned_data['username']
+        password = cleaned_data['password']
+        password_again =cleaned_data['password_again']
+        rp = ResetPassword.objects.filter(token=token).first()
+        user = User.objects.filter(username=username).first()
+        if not user:
+            raise forms.ValidationError('This is Username doesn\'t exists !')
+        
+        if not rp or rp.user != user:
+            raise forms.ValidationError('Process failed!')
+        
+        if password and password_again and password != password_again:
+            raise forms.ValidationError('Passwords are not same !')
+        
+        return cleaned_data
+    
+    def save(self):
+        cleaned_date = self.cleaned_data
+        username = self.cleaned_data['username']
+        password = self.cleaned_data['password']
+        user = User.objects.get(username=username)
+        user.set_password(password)
+        user.save()
+        rp = ResetPassword.objects.get(token=cleaned_date['token'])
+        rp.used = True
+        rp.save()
+        return user
 

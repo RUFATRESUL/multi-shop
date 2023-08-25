@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from .models import WishItem,BasketItem,ResetPassword
-from .forms import RegisterForm,ContactForm
+from .forms import RegisterForm,ContactForm,PasswordResetForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,authenticate,logout
 from shop.models import Prouduct
@@ -192,7 +192,20 @@ def forgot_password_view(request):
 
 
 def reset_password_view(request,token):
-    return render(request,'reset-password.html')
+    rp = ResetPassword.objects.filter(token=token).first()
+    if rp and rp.is_valid():
+        if request.method == 'GET':
+            form = PasswordResetForm(initial={'token':token})
+            return render(request,'reset-password.html',{'form':form})
+        else:
+            form = PasswordResetForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('customer:reset-password-result', color='success', message='Password change successfully') 
+            return render(request,'reset-password.html',{'form':form})
+    else:
+        return redirect('customer:reset-password-result', color='danger', message='This link is broken or already used!')
+
 
 def reset_password_result_view(request,color,message):
     return render(request,'reset-password-result.html',{'color':color,'message':message})

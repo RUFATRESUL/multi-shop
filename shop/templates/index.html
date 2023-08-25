@@ -2,6 +2,7 @@
 {% extends 'layout.html' %}
 {% load static %}
 {% load i18n %}
+{% load cache %}
 
 {% block meta_tags %}
   <meta name="keywords" content="clothes,shop,coupon,sale,wear">
@@ -15,6 +16,7 @@
 {% endblock meta_tags %}
 {% block main %}
     <!-- Carousel Start -->
+    {% cache 30 home_slider%}
     <div class="container-fluid mb-3">
         <div class="row px-xl-5">
             <div class="col-lg-8">
@@ -54,6 +56,7 @@
             </div>
         </div>
     </div>
+    {%endcache%}
     <!-- Carousel End -->
 
 
@@ -129,6 +132,7 @@
 
 
     <!-- Offer Start -->
+   
     <div class="container-fluid pt-5 pb-3">
         <div class="row px-xl-5">
             {% for slide in nonslide_company|slice:"2:"%}
@@ -146,6 +150,7 @@
             {% endfor %}
         </div>
     </div>
+  
     <!-- Offer End -->
     
 

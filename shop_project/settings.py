@@ -169,3 +169,10 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'derbylogotech1@gmail.com'
 EMAIL_HOST_PASSWORD = 'eyxqpnhvrlopxsiq'
 EMAIL_USE_TLS = True
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR.parent / 'django-cache',
+    }
+}
