@@ -176,3 +176,20 @@ CACHES = {
         "LOCATION": BASE_DIR.parent / 'django-cache',
     }
 }
+# AKIA2W7CTPA7DSBSTAUZ
+# Rrq/EVF9fnMxBbv1kJUiy8MwHphLv6QBU9L9QczL
+STORAGES = {
+    "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+    }
+
+AWS_S3_ACCESS_KEY_ID ='AKIA2W7CTPA7BPZVTXOW'
+AWS_S3_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'k221-ecommerce'
+AWS_DEFAULT_ACL = 'public-read'
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_REGION_NAME = 'eu-north-1'
+AWS_LOCATION = 'media'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'

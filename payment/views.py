@@ -2,9 +2,11 @@ from django.shortcuts import render,redirect
 from .models import Coupon
 from django.db.models import Sum,F
 from .forms import OrderForm
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def checkout(request):
+    
     basketlist = request.user.customer.basketlist.all().annotate(total_price=F('count')*F('product__price'))
     all_price = basketlist.aggregate(all_price=Sum('total_price'))['all_price'] or 0
     shipping_price = all_price * 0.07
