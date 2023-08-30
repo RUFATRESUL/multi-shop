@@ -8,9 +8,10 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 """
 
 import os
+import dotenv
 
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'shop_project.settings')
-
+dotenv.load_dotenv()
 application = get_wsgi_application()

@@ -29,11 +29,11 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return self.prorities[item]
     
     prorities = {
-        'shop:index':,
-        'shop:shop':,
-        'customer:contact':,
-        'customer:login':,
-        'customer:register' :,
+        'shop:index',
+        'shop:shop',
+        'customer:contact',
+        'customer:login',
+        'customer:register',
     }
 
 

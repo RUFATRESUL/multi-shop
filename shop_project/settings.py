@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from django.urls import reverse_lazy
+from os import getenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n$c6e-y%w(j%*-q^7qvvp0gkwg@h+&2q%8nbt8y^(*^yaebdcc'
+SECRET_KEY = getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = getenv('DEBUG') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = getenv('ALLOWED_HOSTS').split(', ')
 
 
 # Application definition
@@ -92,11 +93,11 @@ WSGI_APPLICATION = 'shop_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecommerce',
-        'USER': 'postgres',
-        'PASSWORD': '1997',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': getenv('DB_NAME'),
+        'USER': getenv('DB_USER'),
+        'PASSWORD': getenv('DB_PASSWORD'),
+        'HOST': getenv('DB_HOST'),
+        'PORT': getenv('DB_PORT'),
     }
 }
 
@@ -164,10 +165,10 @@ LOGIN_URL = reverse_lazy('customer:register')
 # RECAPTCHA_PRIVATE_KEY = '6Lc3PVknAAAAAMVABXXxSVNaWcpIQ7xV-pjPvHDE'
 # SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # eyxqpnhvrlopxsiq
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = getenv('EMAIL_HOST')
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'derbylogotech1@gmail.com'
-EMAIL_HOST_PASSWORD = 'eyxqpnhvrlopxsiq'
+EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 CACHES = {
@@ -185,9 +186,9 @@ STORAGES = {
     },
     }
 
-AWS_S3_ACCESS_KEY_ID ='AKIA2W7CTPA7BPZVTXOW'
-AWS_S3_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'k221-ecommerce'
+AWS_S3_ACCESS_KEY_ID = getenv('AWS_S3_ACCESS_KEY_ID')
+AWS_S3_SECRET_ACCESS_KEY = getenv('AWS_S3_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_DEFAULT_ACL = 'public-read'
 AWS_QUERYSTRING_AUTH = False
 AWS_S3_REGION_NAME = 'eu-north-1'
