@@ -2,12 +2,10 @@ asgiref==3.7.2
 beautifulsoup4==4.12.2
 boto3==1.28.35
 botocore==1.31.35
-crispy-bootstrap5==0.7
 Django==4.2.3
 django-bootstrap-v5==1.0.11
 django-bootstrap5==23.3
 django-cleanup==8.0.0
-django-crispy-forms==2.0
 django-filter==23.2
 django-recaptcha==3.0.0
 django-storages==1.13.2
